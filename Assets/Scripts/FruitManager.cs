@@ -1,26 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FruitManager : MonoBehaviour
 {
     [Header("Elements")]
-    [SerializeField] GameObject fruitPrefab;
+    [SerializeField] Fruit[] fruitPrefabs;
     [SerializeField] LineRenderer fruitSpawnLine;
 
-    GameObject currentFruit;
+    Fruit currentFruit;
 
     [Header("Settings")]
     [SerializeField] float fruitYSpawnPosition;
 
+    bool canManage;     // default: false
+    bool isControlling;
+
     void Start()
     {
+        canManage = true;
         HideLine();
     }
 
     void Update()
     {
-        ManagePlayerInput();
+        if (canManage)
+        {
+            ManagePlayerInput();
+        }
     }
 
     void ManagePlayerInput()
@@ -31,14 +36,20 @@ public class FruitManager : MonoBehaviour
         }
         else if (Input.GetMouseButton(0))
         {
-            MouseDragCallback();
+            if (isControlling)
+            {
+                MouseDragCallback();
+            }
+            else
+            {
+                MouseUpCallback();
+            }
+
         }
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && isControlling)
         {
             MouseUpCallback();
         }
-
-
     }
 
     void MouseDownCallback()
@@ -47,18 +58,24 @@ public class FruitManager : MonoBehaviour
         PlaceLineAtClickedPosition();
 
         SpawnFruit();
+        isControlling = true;
     }
 
     void MouseDragCallback()
     {
         PlaceLineAtClickedPosition();
-        currentFruit.transform.position = GetSpawnPosition();
+        currentFruit.MoveTo(GetSpawnPosition());
     }
 
     void MouseUpCallback()
     {
         HideLine();
-        currentFruit.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        currentFruit.EnablePhysics();
+
+        canManage = false;
+        StartControlTimer();
+
+        isControlling = false;
     }
 
     void PlaceLineAtClickedPosition()
@@ -83,7 +100,7 @@ public class FruitManager : MonoBehaviour
     void SpawnFruit()
     {
         Vector2 pos = GetSpawnPosition();
-        currentFruit = Instantiate(fruitPrefab, pos, Quaternion.identity);
+        currentFruit = Instantiate(fruitPrefabs[Random.Range(0, fruitPrefabs.Length)], pos, Quaternion.identity);
     }
 
     void HideLine()
@@ -94,5 +111,15 @@ public class FruitManager : MonoBehaviour
     void DisplayLine()
     {
         fruitSpawnLine.enabled = true;
+    }
+
+    void StartControlTimer()
+    {
+        Invoke("StopControlTimer", 0.5f);
+    }
+
+    void StopControlTimer()
+    {
+        canManage = true;
     }
 }
