@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: bff3e4e96a7d8754598c76692e3d4be0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: da9d5dcd7f782014c803fc676890ce94, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: -2291045099855479624}
   - component: {fileID: 5677922628336447963}
   m_Layer: 0
-  m_Name: 02_Plum
+  m_Name: 03_Kiwi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35eb53a71f0bfb2428fa973f5db6de8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fruitType: 2
+  fruitType: 3
   spriteRenderer: {fileID: 5541556821196276088}
 --- !u!95 &5677922628336447963
 Animator:

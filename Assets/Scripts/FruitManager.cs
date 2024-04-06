@@ -1,21 +1,41 @@
+using System;
 using UnityEngine;
 
 public class FruitManager : MonoBehaviour
 {
     [Header("Elements")]
     [SerializeField] Fruit[] fruitPrefabs;
+    [SerializeField] Fruit[] spawnableFruits;
     [SerializeField] LineRenderer fruitSpawnLine;
 
     Fruit currentFruit;
 
     [Header("Settings")]
     [SerializeField] float fruitYSpawnPosition;
+    [SerializeField] Transform fruitsParent;
 
     bool canManage;     // default: false
     bool isControlling;
 
+    [Header("Actions")]
+    public static Action onNextFruitIndexSet;
+
+    [Header("Next Fruit Settings")]
+    [SerializeField] int nextFruitIndex;
+
+    private void Awake()
+    {
+        MergeManager.onMergeProcess += MergeProcessCallback;
+    }
+
+    private void OnDestroy()
+    {
+        MergeManager.onMergeProcess -= MergeProcessCallback;
+    }
+
     void Start()
     {
+        SetNextFruitIndex();
         canManage = true;
         HideLine();
     }
@@ -100,7 +120,9 @@ public class FruitManager : MonoBehaviour
     void SpawnFruit()
     {
         Vector2 pos = GetSpawnPosition();
-        currentFruit = Instantiate(fruitPrefabs[Random.Range(0, fruitPrefabs.Length)], pos, Quaternion.identity);
+        currentFruit = Instantiate(spawnableFruits[nextFruitIndex], pos, Quaternion.identity, fruitsParent);
+
+        SetNextFruitIndex();    // sinh ra fruit mới
     }
 
     void HideLine()
@@ -121,5 +143,36 @@ public class FruitManager : MonoBehaviour
     void StopControlTimer()
     {
         canManage = true;
+    }
+
+    void MergeProcessCallback(FruitType fruitType, Vector2 spawnPosition)
+    {
+        // tìm Fruit tương ứng với FruitType
+        for (int i = 0; i < fruitPrefabs.Length; i++)
+        {
+            if (fruitPrefabs[i].GetFruitType() == fruitType)
+            {
+                // sinh fruit mới
+                SpawnMergeFruit(fruitPrefabs[i], spawnPosition);
+                break;
+            }
+        }
+    }
+
+    void SpawnMergeFruit(Fruit fruit, Vector2 spawnPosition)
+    {
+        Fruit fruitInstance = Instantiate(fruit, spawnPosition, Quaternion.identity, fruitsParent);
+        fruitInstance.EnablePhysics();
+    }
+
+    void SetNextFruitIndex()
+    {
+        nextFruitIndex = UnityEngine.Random.Range(0, spawnableFruits.Length);
+        onNextFruitIndexSet?.Invoke();
+    }
+
+    public Sprite GetNextFruitSprite()
+    {
+        return spawnableFruits[nextFruitIndex].GetSprite();
     }
 }

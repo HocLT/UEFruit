@@ -198,6 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fruitType: 1
+  spriteRenderer: {fileID: 5541556821196276088}
 --- !u!95 &5677922628336447963
 Animator:
   serializedVersion: 7

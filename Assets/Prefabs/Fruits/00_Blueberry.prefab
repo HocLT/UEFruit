@@ -197,6 +197,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35eb53a71f0bfb2428fa973f5db6de8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fruitType: 0
+  spriteRenderer: {fileID: 5541556821196276088}
 --- !u!95 &5677922628336447963
 Animator:
   serializedVersion: 7
